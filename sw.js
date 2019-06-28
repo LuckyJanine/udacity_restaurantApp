@@ -9,21 +9,53 @@ self.addEventListener("install", function(event){
                     "/index.html",
                     "/restaurant.html",
                     "/css/styles.css",
-                    "/js/dbhelper.js",
                     "/js/main.js",
                     "/js/restaurant_info.js",
+                    "/js/register.js",
+                    "/data/restaurants.json",
+                    "/img"
                 ]).catch(function(err){
                     console.log("caches open failed: " + err);
                 });
-            })
-    );
-});
-
-self.addEventListener("fetch", function(event) {
-    event.respondWith(
-        caches.match(event.request).then(function(response){
-            if(response) return response;
-            return fetch(event.request);
         })
     );
 });
+
+self.addEventListener('activate', function(event) {
+//    console.log("activated");
+  });
+
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+        caches.match(event.request)
+        .then(function(response) {
+    
+            if (response) {
+            return response;
+            }
+
+            return fetch(event.request).then(function(response) {
+
+                var response_clone = response.clone();
+
+                if(response) {
+                    return response;
+                }
+
+                caches.open(cache_name).then(function(cache) {
+                    cache.put(event.request, response_clone);
+                });
+
+                return response;
+                }
+            );
+        })
+    );
+});
+  
+
+self.addEventListener("message", function(event){
+    if(event.data.action == "skipWaiting"){
+        self.skipWaiting();
+    }
+})

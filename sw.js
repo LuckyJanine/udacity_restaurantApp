@@ -28,24 +28,19 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
     event.respondWith(
         caches.match(event.request)
-        .then(function(response) {
-    
+        .then(function(response) {   
             if (response) {
-            return response;
+                return response;
             }
 
             return fetch(event.request).then(function(response) {
-
                 var response_clone = response.clone();
-
                 if(response) {
                     return response;
                 }
-
                 caches.open(cache_name).then(function(cache) {
                     cache.put(event.request, response_clone);
                 });
-
                 return response;
                 }
             );

@@ -17,7 +17,7 @@ self.addEventListener("install", function(event){
                 ]).catch(function(err){
                     console.log("caches open failed: " + err);
                 });
-        })
+            })
     );
 });
 
@@ -38,6 +38,7 @@ self.addEventListener('fetch', function(event) {
                 if(response) {
                     return response;
                 }
+
                 caches.open(cache_name).then(function(cache) {
                     cache.put(event.request, response_clone);
                 });
